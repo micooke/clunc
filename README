@@ -63,3 +63,46 @@ Examples:
     clunc -i 192.168.42.3
     clunc -i 192.168.42.3 < uboot-commands
     echo print | clunc -i 192.168.42.3
+
+
+What to do when connected ?
+-------------------------
+
+U-Boot waits commands.
+'help' prints available commands.
+'print' prints environment variables.
+
+The variables 'ipaddr' and 'serverip' are automatically set to IP addresses of
+NAS and machine running clunc, respectively.
+
+A Linux image can be downloaded via TFTP:
+    tftp 0x800000 uImage
+Launch it with command 'bootm'
+
+
+How to see Linux messages ?
+-------------------------
+
+Linux can log its messages via netconsole if compiled with option CONFIG_NETCONSOLE.
+This feature must be configured at boot time:
+    set bootargs netconsole=6666@${ipaddr}/,6666@${serverip}/
+
+
+Why my vanilla kernel doesn't boot ?
+----------------------------------
+
+The bootloader is configured to boot LaCie kernels.
+
+In order to boot a standard kernel, 2 variables must be set:
+    set mainlineLinux yes
+    set arcNumber xxxx
+    save
+    reset
+The variable 'arcNumber' must match the official mach ID of your board.
+It can be found at:
+    http://www.arm.linux.org.uk/developer/machines/download.php
+
+To restore U-Boot for LaCie normal boot:
+    set mainlineLinux no
+    save
+    reset
