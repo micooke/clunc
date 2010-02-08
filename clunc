@@ -121,7 +121,15 @@ print_header () {
 
 			U-Boot NetConsole
 			-----------------
+
 		END_OF_HEADER
+
+		if [ -t 0 ] ; then # input from a terminal
+			echo 'interactive shell'
+		else # input is a pipe or a file
+			echo 'batch commands (close with CTRL+C when done)'
+			echo
+		fi
 	fi
 }
 
@@ -140,10 +148,10 @@ else
 fi
 # NetConsole is ready
 print_header
-if [ -t 0 ] ; then # input from a terminal -> interactive shell
+if [ -t 0 ] ; then # input from a terminal
 	(echo ; cat) | $NC_CMD
-	echo
-else # input is a pipe or a file -> batch commands
-	(echo ; cat) | $NC_CMD -w $DELAY
+else # input is a pipe or a file
+	printf 'Marvell>> '
+	$NC_CMD -w $DELAY
 	echo ; echo
 fi
