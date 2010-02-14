@@ -56,8 +56,8 @@ It can be used
      as an interactive shell
   or to send a batch of commands via the standard input
 
-In case of batch commands, CLUNC will close itself after a inactivity time.
-This timeout can be defined with option "-w". The default is 1 second.
+In case of batch commands, CLUNC can close itself after a inactivity time.
+This timeout can be defined with option "-t".
 
 Examples:
     clunc -i 192.168.42.3

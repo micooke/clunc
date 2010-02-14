@@ -25,8 +25,7 @@ print_usage () {
 		         -v           verbose
 		         -m address   MAC to target
 		         -i address   IP to set (mandatory)
-		         -w seconds   inactivity time to wait
-		                      before closing a batch session (default: 1)
+		         -t seconds   close batch session after an inactivity time
 	END_OF_USAGE
 }
 
@@ -42,7 +41,7 @@ set_defaults () {
 	unset IP
 	SERVER_PORT=6666
 	CLIENT_PORT=6666
-	DELAY=1
+	unset TIMEOUT_OPT
 	VERBOSE=0
 }
 
@@ -50,7 +49,7 @@ handle_args () {
 	SELF=$(basename $0)
 	SELF_DIR=$(readlink -em $(dirname $0))
 
-	while getopts 'hvm:i:w:' ARG ; do
+	while getopts 'hvm:i:t:' ARG ; do
 		case $ARG in
 			h )
 				print_help
@@ -67,12 +66,12 @@ handle_args () {
 				IP=$OPTARG
 				OPEN_OPTS="$OPEN_OPTS -i $IP"
 			;;
-			w )
+			t )
 				if ! has_batch_input ; then
-					echo 'option -w is for batch mode'
+					echo 'option -t is for batch mode'
 					syntax_error
 				fi
-				DELAY=$OPTARG
+				TIMEOUT_OPT="-w $OPTARG"
 			;;
 			* )
 				syntax_error
@@ -160,7 +159,7 @@ fi
 print_header
 if has_batch_input ; then # input is a pipe or a file
 	printf 'Marvell>> '
-	$NC_CMD -w $DELAY
+	$NC_CMD $TIMEOUT_OPT
 	echo ; echo
 else # input from a terminal
 	(echo ; cat) | $NC_CMD
