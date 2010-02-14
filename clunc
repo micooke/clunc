@@ -68,6 +68,10 @@ handle_args () {
 				OPEN_OPTS="$OPEN_OPTS -i $IP"
 			;;
 			w )
+				if ! has_batch_input ; then
+					echo 'option -w is for batch mode'
+					syntax_error
+				fi
 				DELAY=$OPTARG
 			;;
 			* )
