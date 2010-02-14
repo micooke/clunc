@@ -30,6 +30,12 @@ print_usage () {
 	END_OF_USAGE
 }
 
+syntax_error () {
+	printf '\n' >&2
+	print_usage
+	exit 2
+}
+
 set_defaults () {
 	unset OPEN_OPTS
 	unset TARGET_MAC
@@ -65,21 +71,17 @@ handle_args () {
 				DELAY=$OPTARG
 			;;
 			* )
-				printf "\n" >&2
-				print_usage
-				exit 1
+				syntax_error
 			;;
 		esac
 	done
 	if [ $# -ge $OPTIND ] ; then
-		printf "too many arguments\n\n" >&2
-		print_usage
-		exit 1
+		echo 'too many arguments' >&2
+		syntax_error
 	fi
 	if [ -z "$IP" ] ; then
-		printf "option -i required\n\n" >&2
-		print_usage
-		exit 1
+		echo 'option -i required' >&2
+		syntax_error
 	fi
 }
 
